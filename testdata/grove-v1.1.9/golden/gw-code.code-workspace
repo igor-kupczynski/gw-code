@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": "collector-core",
+      "name": "collector-core"
+    },
+    {
+      "path": "collector-contrib",
+      "name": "collector-contrib"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+version: 2
+project_name: gw-code
+
+builds:
+  - id: gw-code
+    main: ./cmd/gw-code
+    binary: gw-code
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/igor-kupczynski/gw-code/internal/buildinfo.Version={{.Version}}
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+release:
+  github:
+    owner: igor-kupczynski
+    name: gw-code
+  draft: false
+  prerelease: false
