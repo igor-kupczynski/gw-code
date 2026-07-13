@@ -50,7 +50,7 @@ func (a *App) Refresh(ctx context.Context, workspaceName string) (RefreshResult,
 	if err != nil {
 		return RefreshResult{}, err
 	}
-	workspacePath := workspacefile.PathIn(ws.Path)
+	workspacePath := workspacefile.PathIn(ws.Path, ws.Name)
 	doc, err := workspacefile.Render(*ws)
 	if err != nil {
 		return RefreshResult{}, err
@@ -61,6 +61,9 @@ func (a *App) Refresh(ctx context.Context, workspaceName string) (RefreshResult,
 	}
 	changed, err := workspacefile.WriteAtomic(workspacePath, workspaceData)
 	if err != nil {
+		return RefreshResult{}, err
+	}
+	if err := workspacefile.RemoveLegacy(ws.Path); err != nil {
 		return RefreshResult{}, err
 	}
 	abs, err := filepath.Abs(workspacePath)
@@ -79,5 +82,5 @@ func (a *App) Path(ctx context.Context, workspaceName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Abs(workspacefile.PathIn(ws.Path))
+	return filepath.Abs(workspacefile.PathIn(ws.Path, ws.Name))
 }

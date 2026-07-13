@@ -20,8 +20,23 @@ type Folder struct {
 	Name string `json:"name,omitempty"`
 }
 
-func PathIn(workspaceRoot string) string {
-	return filepath.Join(workspaceRoot, "gw-code.code-workspace")
+const legacyWorkspaceFile = "gw-code.code-workspace"
+
+func PathIn(workspaceRoot, workspaceName string) string {
+	return filepath.Join(workspaceRoot, workspaceName+".code-workspace")
+}
+
+func LegacyPathIn(workspaceRoot string) string {
+	return filepath.Join(workspaceRoot, legacyWorkspaceFile)
+}
+
+// RemoveLegacy deletes the pre-v0.2.0 gw-code.code-workspace file if present.
+func RemoveLegacy(workspaceRoot string) error {
+	err := os.Remove(LegacyPathIn(workspaceRoot))
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
 }
 
 // Render builds a deterministic workspace document.

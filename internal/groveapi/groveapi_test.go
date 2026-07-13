@@ -180,3 +180,17 @@ func TestValidateWorkspaceDuplicateRepoName(t *testing.T) {
 		t.Fatal("expected duplicate repo error")
 	}
 }
+
+func TestValidateWorkspaceNamePathSeparator(t *testing.T) {
+	t.Parallel()
+	err := groveapi.ValidateWorkspace(&groveapi.Workspace{
+		Name: "bad/name",
+		Path: "/tmp/demo",
+		Repos: []groveapi.RepoWorktree{
+			{RepoName: "a", WorktreePath: "/tmp/demo/a"},
+		},
+	})
+	if err == nil {
+		t.Fatal("expected path separator error")
+	}
+}
