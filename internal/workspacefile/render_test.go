@@ -30,7 +30,7 @@ func TestGoldenWorkspace(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want, err := os.ReadFile(filepath.Join(fixtureRoot, "golden", "gw-code.code-workspace"))
+	want, err := os.ReadFile(filepath.Join(fixtureRoot, "golden", "otel-dev.code-workspace"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func TestFolderPathsResolveFromWorkspaceFileDir(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	workspaceFile := workspacefile.PathIn(wsDir)
+	workspaceFile := workspacefile.PathIn(wsDir, ws.Name)
 	for i, folder := range doc.Folders {
 		resolved := filepath.Clean(filepath.Join(filepath.Dir(workspaceFile), filepath.FromSlash(folder.Path)))
 		want, err := filepath.EvalSymlinks(repoPaths[i])
@@ -138,7 +138,7 @@ func TestExternalFolderResolvesFromWorkspaceFileDir(t *testing.T) {
 	if len(doc.Folders) != 1 {
 		t.Fatalf("folders = %#v", doc.Folders)
 	}
-	workspaceFile := workspacefile.PathIn(wsPath)
+	workspaceFile := workspacefile.PathIn(wsPath, ws.Name)
 	resolved := filepath.Clean(filepath.Join(filepath.Dir(workspaceFile), filepath.FromSlash(doc.Folders[0].Path)))
 	want, err := filepath.EvalSymlinks(external)
 	if err != nil {
@@ -155,7 +155,25 @@ func TestExternalFolderResolvesFromWorkspaceFileDir(t *testing.T) {
 
 func TestPathIn(t *testing.T) {
 	t.Parallel()
-	if got := workspacefile.PathIn("/tmp/ws"); got != filepath.Join("/tmp/ws", "gw-code.code-workspace") {
+	if got := workspacefile.PathIn("/tmp/ws", "otel-dev"); got != filepath.Join("/tmp/ws", "otel-dev.code-workspace") {
 		t.Fatalf("PathIn = %q", got)
+	}
+}
+
+func TestRemoveLegacy(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	legacy := workspacefile.LegacyPathIn(dir)
+	if err := os.WriteFile(legacy, []byte("{}"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := workspacefile.RemoveLegacy(dir); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(legacy); !os.IsNotExist(err) {
+		t.Fatalf("legacy file still exists: %v", err)
+	}
+	if err := workspacefile.RemoveLegacy(dir); err != nil {
+		t.Fatal("expected missing legacy file to be ignored")
 	}
 }

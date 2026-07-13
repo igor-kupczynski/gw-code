@@ -14,6 +14,9 @@ func ValidateWorkspace(ws *Workspace) error {
 	if strings.TrimSpace(ws.Name) == "" {
 		return fmt.Errorf("workspace name is required")
 	}
+	if strings.ContainsAny(ws.Name, `/\`) {
+		return fmt.Errorf("workspace %s: name must not contain path separators", ws.Name)
+	}
 	if strings.TrimSpace(ws.Path) == "" {
 		return fmt.Errorf("workspace %s: path is required", ws.Name)
 	}

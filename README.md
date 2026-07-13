@@ -65,7 +65,7 @@ gw create editor-demo --repos bubbletea,bubbles --branch try-gw-code
 gw code editor-demo
 ```
 
-`gw code` generates `<workspace>/gw-code.code-workspace` with one folder per Grove repo and opens it with VS Code.
+`gw code` generates `<workspace>/<workspace-name>.code-workspace` with one folder per Grove repo and opens it with VS Code.
 
 ## Editor configuration
 
@@ -80,7 +80,7 @@ args = ["--classic"]
 `gw-code` passes configured arguments before the required `--new-window` flag and workspace path:
 
 ```text
-cursor --classic --new-window <workspace>/gw-code.code-workspace
+cursor --classic --new-window <workspace>/editor-demo.code-workspace
 ```
 
 Shell aliases such as `cr` are not visible to direct process execution; configure the actual executable name and arguments instead. There is no per-workspace config or CLI override.
@@ -91,7 +91,7 @@ If the editor binary is missing, `gw-code` still generates the workspace file an
 
 ```text
 <workspace>/
-  gw-code.code-workspace   # generated; may be overwritten
+  <workspace-name>.code-workspace   # generated; may be overwritten
 ```
 
 `gw-code` never modifies Grove `state.json` or source repositories.

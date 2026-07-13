@@ -100,7 +100,7 @@ func TestGroveDispatch(t *testing.T) {
 		if err != nil {
 			t.Fatalf("gw code otel-dev: %v\n%s", err, out)
 		}
-		if !strings.Contains(string(out), "gw-code.code-workspace") {
+		if !strings.Contains(string(out), "otel-dev.code-workspace") {
 			t.Fatalf("unexpected output: %s", out)
 		}
 		logText := waitForEditorLog(t, logPath, 2*time.Second)
@@ -110,7 +110,7 @@ func TestGroveDispatch(t *testing.T) {
 		if !strings.Contains(logText, "--classic") {
 			t.Fatalf("configured editor args missing from argv log: %q", logText)
 		}
-		if !strings.Contains(logText, "gw-code.code-workspace") {
+		if !strings.Contains(logText, "otel-dev.code-workspace") {
 			t.Fatalf("workspace file not passed to editor: %q", logText)
 		}
 	})
@@ -124,7 +124,7 @@ func TestGroveDispatch(t *testing.T) {
 			t.Fatalf("gw code --path: %v\n%s", err, out)
 		}
 		path := strings.TrimSpace(string(out))
-		if !strings.HasSuffix(path, "gw-code.code-workspace") {
+		if !strings.HasSuffix(path, "otel-dev.code-workspace") {
 			t.Fatalf("unexpected path: %q", path)
 		}
 	})
